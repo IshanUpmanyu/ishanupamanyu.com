@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Information Retrieval on Ishan&#39;s Blog</title>
+    <link>http://localhost:1313/tags/information-retrieval/</link>
+    <description>Recent content in Information Retrieval on Ishan&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 01 Apr 2022 23:34:14 +0530</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/information-retrieval/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to get all documents in Lucene?</title>
+      <link>http://localhost:1313/blog/get-all-documents-in-lucene/</link>
+      <pubDate>Fri, 01 Apr 2022 23:34:14 +0530</pubDate>
+      <guid>http://localhost:1313/blog/get-all-documents-in-lucene/</guid>
+      <description>If you are new to Lucene you may be wondering how to get all documents in the Lucene index. We can easily get documents matching a particular term or matching a query but how do we get all the documents in the Lucene index?&#xA;We can get all documents in Lucene by using either the MatchAllDocsQuery query or by using *:* as the search string with QueryParser.&#xA;In this blog post, we will look at both ways with fully working code to get all documents from the Lucene index.</description>
+    </item>
+    <item>
+      <title>Apache Lucene Tutorial - A simple guide to getting started in 2022</title>
+      <link>http://localhost:1313/blog/apache-lucene-tutorial/</link>
+      <pubDate>Fri, 01 Apr 2022 20:38:55 +0530</pubDate>
+      <guid>http://localhost:1313/blog/apache-lucene-tutorial/</guid>
+      <description>Apache Lucene is a full-text search library written in Java. Lucene is a top-level Apache Project. and was written in 1999 by Doug Cutting.&#xA;This is the only Apache Lucene tutorial you will need to get started with Lucene in 2022. We will first go over the basic concepts of Apache Lucene. Then we will try and explore the Lucene API. At last, we will end this tutorial by building a search application that indexes and searches files on our local file system.</description>
+    </item>
+    <item>
+      <title>How the inverted index data structure works - The detailed explanation you wanted.</title>
+      <link>http://localhost:1313/blog/inverted-index-data-structure/</link>
+      <pubDate>Mon, 24 Jan 2022 20:37:30 +0530</pubDate>
+      <guid>http://localhost:1313/blog/inverted-index-data-structure/</guid>
+      <description>You might have done a google search. Or you might have tried finding that favorite Ed Sheeran Video on Youtube. You may have tried finding the latest gadget you crave on Amazon. If your answer to any of the above questions was yes, you have already used an inverted index.&#xA;These websites work with millions and billions of web pages, songs, or products. Have you wondered how the results appear so fast?</description>
+    </item>
+    <item>
+      <title>How the search scoring algorithm works - A plain English guide to Vector Space Model</title>
+      <link>http://localhost:1313/blog/how-search-scoring-algorithm-works/</link>
+      <pubDate>Tue, 23 Nov 2021 13:02:00 +0530</pubDate>
+      <guid>http://localhost:1313/blog/how-search-scoring-algorithm-works/</guid>
+      <description>Have you ever wondered how scoring in Elasticsearch is done?&#xA;Or you might be wondering why Solr ranked your results in a particular order.&#xA;Do you understand what happens under the hood? Both these systems use Apache Lucene internally. Now Lucene does scoring using a combination of Boolean Model on the inverted index and Vector Space Model.&#xA;In the previous article, we learned the Boolean model on an inverted index. It is used to shortlist documents that match our query.</description>
+    </item>
+  </channel>
+</rss>
