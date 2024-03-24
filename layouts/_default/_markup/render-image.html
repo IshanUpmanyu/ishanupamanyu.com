@@ -5,6 +5,7 @@
 
       <img src="{{ .RelPermalink }}"
         {{- with $.Text }} alt="{{ . }}"{{ end -}}  
+        height = "auto" width="{{$image.Width}}" max-width="100%" 
       >
     {{ end }}
     <figcaption align = "center">Figure: {{ .Title }}</figcaption>
@@ -14,6 +15,7 @@
 
      <img src="{{ .RelPermalink }}"
         {{- with $.Text }} alt="{{ . }}"{{ end -}}  
+        height = "auto" width="{{$image.Width}}" max-width="100%"
       >
     
   {{ end }}
