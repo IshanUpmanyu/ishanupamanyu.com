@@ -158,7 +158,7 @@ params:
   about:
     enable: true
     title: "About Me"
-    image: "/images/ishan-profile.webp"
+    image: "/images/ishan-profile.jpeg"
     content: |-
       I am Ishan Upmanyu, a Senior Software Engineer with 9 years of experience in Java, Spring, and Scala. I have a strong passion for backend engineering and enjoy exploring various topics in this field. 
 

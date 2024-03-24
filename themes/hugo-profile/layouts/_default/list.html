@@ -19,9 +19,9 @@
                     <div class="card-header">
                         <a href="{{ .RelPermalink }}">
                             {{- $image := resources.Get .Params.image -}}
-                                {{ with $image.Resize (printf "%dx%d webp" $image.Width $image.Height) }}
-                                    <img src="{{ .RelPermalink }}" class="card-img-top" alt="{{ .Title }}" height = "auto" width="{{$image.Width}}" max-width="100%">
-                                {{ end }}
+                            {{ with $image.Resize (printf "%dx%d webp" $image.Width $image.Height) }}
+                                <img src="{{ .RelPermalink }}" class="card-img-top" alt="{{ .Title }}" height = "auto" width="{{$image.Width}}" max-width="100%">
+                            {{ end }}
                         </a>
                     </div>
                     {{ end }}

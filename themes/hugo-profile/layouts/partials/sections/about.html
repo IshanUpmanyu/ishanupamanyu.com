@@ -7,6 +7,11 @@
             <div class="col-sm-12 col-md-8 col-lg-4 mb-5 mb-sm-0 mb-md-5 mb-lg-0 d-none d-sm-none d-md-block">
                 <div class="image d-flex px-5">
                     <img src="{{ .Site.Params.about.image }}" class="img-thumbnail mx-auto rounded-circle" alt="">
+                    {{- $image := resources.Get .Site.Params.about.image -}}
+                    {{ $image := $image.Resize "400x" }}
+                    {{ with $image.Resize (printf "%dx%d webp" $image.Width $image.Height) }}
+                        <img src="{{ .RelPermalink }}" class="img-thumbnail mx-auto rounded-circle" alt="{{ .Title }}" height = "auto" width="{{$image.Width}}" max-width="100%">
+                    {{ end }}
                 </div>
             </div>
             {{ end }}
