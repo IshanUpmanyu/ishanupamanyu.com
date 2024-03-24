@@ -49,7 +49,7 @@ Menus:
     #   weight: 2
 
 params:
-  title: "Ishan's Blog"
+  title: "Ishan Upamanyu's Blog"
   description: Hi, I am Ishan Upamanyu.
   # staticPath: ""  # The path to serve the static files from
   favicon: "/fav.png"
