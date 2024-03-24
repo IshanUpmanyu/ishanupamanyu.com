@@ -134,7 +134,7 @@ params:
     title: "Ishan Upamanyu."
     subtitle: "I build things with code."
     content: "A passionate backend developer. Here I share what I learn through building software for the real world."
-    image: /images/ishan-profile.webp
+    image: /images/ishan-profile.jpeg
     bottomImage:
       enable: true
     # roundImage: true # Make hero image circular | default false
