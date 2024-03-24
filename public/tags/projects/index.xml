@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Projects on Ishan&#39;s Blog</title>
+    <link>http://localhost:1313/tags/projects/</link>
+    <description>Recent content in Projects on Ishan&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 16 Mar 2022 21:02:48 +0530</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/projects/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How I created a search engine for Wikipedia articles</title>
+      <link>http://localhost:1313/blog/search-engine-for-wikipedia-articles/</link>
+      <pubDate>Wed, 16 Mar 2022 21:02:48 +0530</pubDate>
+      <guid>http://localhost:1313/blog/search-engine-for-wikipedia-articles/</guid>
+      <description>It is said that the best way to learn a new software technology is to get your hands dirty. Recently I followed this advice when I was learning to be a search engineer. I found myself getting more and more interested in learning how search engines like google and product search engines like Amazon search work. I started learning about information retrieval theory and gradually moved on to practical technologies like Apache Lucene and Apache Solr.</description>
+    </item>
+  </channel>
+</rss>

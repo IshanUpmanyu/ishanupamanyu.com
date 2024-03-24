@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html>
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta http-equiv="Accept-CH" content="DPR, Viewport-Width, Width">
+<link rel="icon" href=/fav.png type="image/gif">
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Alata&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+>
+<link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Alata&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+      media="print" onload="this.media='all'" />
+<noscript>
+  <link
+          href="https://fonts.googleapis.com/css2?family=Alata&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+          rel="stylesheet">
+</noscript>
+
+
+<link rel="stylesheet" href="/css/font.css" media="all">
+
+
+
+<meta property="og:title" content="How the search scoring algorithm works - A plain English guide to Vector Space Model" />
+<meta property="og:description" content="Understand how the score is calculated using Vector Space Model to rank search results. In-depth explanation in simple easy to understand language." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/blog/how-search-scoring-algorithm-works/" /><meta property="article:section" content="blog" />
+<meta property="article:published_time" content="2021-11-23T13:02:00+05:30" />
+<meta property="article:modified_time" content="2021-11-23T13:02:00+05:30" /><meta property="og:site_name" content="Ishan Upamanyu&#39;s Blog" />
+
+<meta name="twitter:card" content="summary"/><meta name="twitter:title" content="How the search scoring algorithm works - A plain English guide to Vector Space Model"/>
+<meta name="twitter:description" content="Understand how the score is calculated using Vector Space Model to rank search results. In-depth explanation in simple easy to understand language."/>
+
+
+<link rel="stylesheet" href="/bootstrap-5/css/bootstrap.min.css" media="all"><link rel="stylesheet" href="/css/header.css" media="all">
+<link rel="stylesheet" href="/css/footer.css" media="all">
+
+
+<link rel="stylesheet" href="/css/theme.css" media="all">
+
+
+
+
+<style>
+    :root {
+        --text-color: #F5F5F5;
+        --text-secondary-color: #F5F5F5;
+        --background-color: #313552;
+        --secondary-background-color: #64ffda1a;
+        --primary-color: #F1E0AC;
+        --secondary-color: #30475E;
+
+         
+        --text-color-dark: #e4e6eb;
+        --text-secondary-color-dark: #b0b3b8;
+        --background-color-dark: #18191a;
+        --secondary-background-color-dark: #212529;
+        --primary-color-dark: #ffffff;
+        --secondary-color-dark: #212529;
+    }
+    body {
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        text-align: left;
+    }
+
+    html {
+        background-color: var(--background-color) !important;
+    }
+
+    body::-webkit-scrollbar {
+        height: 0px;
+        width: 8px;
+        background-color: var(--background-color);
+    }
+    
+    ::-webkit-scrollbar-track {
+        border-radius: 1rem;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        border-radius: 1rem;
+        background: #b0b0b0;
+        outline: 1px solid var(--background-color);
+    }
+
+    #search-content::-webkit-scrollbar {
+        width: .5em;
+        height: .1em;
+        background-color: var(--background-color);
+    }
+</style>
+
+
+<meta name="description" content="Understand how the score is calculated using Vector Space Model to rank search results. In-depth explanation in simple easy to understand language.">
+<link rel="stylesheet" href="/css/single.css">
+
+
+<script defer src="/fontawesome-6/all-6.4.2.js"></script>
+
+  <title>
+How the search scoring algorithm works - A plain English guide to Vector Space Model | Ishan&#39;s Blog
+
+  </title>
+</head>
+
+<body class="light">
+  
+  
+<script>
+    let localStorageValue = localStorage.getItem("pref-theme");
+    let mediaQuery = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    switch (localStorageValue) {
+        case "dark":
+            document.body.classList.add('dark');
+            break;
+        case "light":
+            document.body.classList.remove('dark');
+            break;
+        default:
+            if (mediaQuery) {
+                document.body.classList.add('dark');
+            }
+            break;
+    }
+</script>
+
+
+
+
+<script>
+    var prevScrollPos = window.pageYOffset;
+    window.addEventListener("scroll", function showHeaderOnScroll() {
+        let profileHeaderElem = document.getElementById("profileHeader");
+        let currentScrollPos = window.pageYOffset;
+        let resetHeaderStyle = false;
+        let showNavBarOnScrollUp =  true ;
+        let showNavBar = showNavBarOnScrollUp ? prevScrollPos > currentScrollPos : currentScrollPos > 0;
+        if (showNavBar) {
+            profileHeaderElem.classList.add("showHeaderOnTop");
+        } else {
+            resetHeaderStyle = true;
+        }
+        if(currentScrollPos === 0) {
+            resetHeaderStyle = true;
+        }
+        if(resetHeaderStyle) {
+            profileHeaderElem.classList.remove("showHeaderOnTop");
+        }
+        prevScrollPos = currentScrollPos;        
+    });
+</script>
+
+
+
+<header id="profileHeader">
+    <nav class="pt-3 navbar navbar-expand-lg animate">
+        <div class="container-fluid mx-xs-2 mx-sm-5 mx-md-5 mx-lg-5">
+            
+            <a class="navbar-brand primary-font text-wrap" href="/">
+                
+                <img src="/fav.png" width="30" height="30"
+                    class="d-inline-block align-top">
+                Ishan Upamanyu
+                
+            </a>
+
+            
+                <div>
+                    <input id="search" autocomplete="off" class="form-control mr-sm-2 d-none d-md-block" placeholder='Ctrl &#43; k to Search...'
+                        aria-label="Search" oninput="searchOnChange(event)">
+                </div>
+            
+
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+                aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                <svg aria-hidden="true" height="24" viewBox="0 0 16 16" version="1.1" width="24" data-view-component="true">
+                    <path fill-rule="evenodd" d="M1 2.75A.75.75 0 011.75 2h12.5a.75.75 0 110 1.5H1.75A.75.75 0 011 2.75zm0 5A.75.75 0 011.75 7h12.5a.75.75 0 110 1.5H1.75A.75.75 0 011 7.75zM1.75 12a.75.75 0 100 1.5h12.5a.75.75 0 100-1.5H1.75z"></path>
+                </svg>
+            </button>
+
+            
+            <div class="collapse navbar-collapse text-wrap primary-font" id="navbarContent">
+                <ul class="navbar-nav ms-auto text-center">
+                    
+                        <li class="nav-item navbar-text d-block d-md-none">
+                            <div class="nav-link">
+                                <input id="search" autocomplete="off" class="form-control mr-sm-2" placeholder='Ctrl &#43; k to Search...' aria-label="Search" oninput="searchOnChange(event)">
+                            </div>
+                        </li>
+                    
+
+                    
+                    <li class="nav-item navbar-text">
+                        <a class="nav-link" href="/#about" aria-label="about">
+                            About Me
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li class="nav-item navbar-text">
+                        <a class="nav-link" href="/#experience"
+                            aria-label="experience">
+                            Experience
+                        </a>
+                    </li>
+                    
+
+                    
+
+                    
+
+                    
+
+                    
+                    <li class="nav-item navbar-text">
+                        <a class="nav-link" href="/#contact"
+                            aria-label="contact">
+                            Contact
+                        </a>
+                    </li>
+                    
+
+                    
+                    
+                    
+                    
+                    <li class="nav-item navbar-text">
+                        <a class="nav-link" href="/blog" title="Blog posts">
+                            
+                            Blog
+                        </a>
+                    </li>
+                    
+                    
+
+                    
+
+                </ul>
+
+            </div>
+        </div>
+    </nav>
+</header>
+<div id="content">
+<section id="single">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-sm-12 col-md-12 col-lg-9">
+        <div class="pr-lg-4">
+          <div class="title mb-5">
+            <h1 class="text-center mb-4">How the search scoring algorithm works - A plain English guide to Vector Space Model</h1>
+            <div class="text-center">
+              Ishan Upamanyu 
+              <small>|</small>
+              Nov 23, 2021
+
+              
+              <span id="readingTime">
+                min read
+              </span>
+              
+            </div>
+          </div>
+          
+          <div class="featured-image">
+                <img class="img-fluid mx-auto d-block"  src="/uploads/2022/01/google-search-min-e1648997488690_huf9b4476d3596968c5e8af2291cfa420f_176051_1770x1005_resize_q75_h2_box.webp" class="card-img-top" alt="/uploads/2022/01/google-search-min-e1648997488690.jpeg" height = "auto" width="1770" max-width="100%">
+            
+          </div>
+          
+          <article class="page-content  p-2">
+          <p>Have you ever wondered how scoring in Elasticsearch is done?</p>
+<p>Or you might be wondering why Solr ranked your results in a particular order.</p>
+<p>Do you understand what happens under the hood? Both these systems use Apache Lucene internally. Now Lucene does scoring using a combination of Boolean Model on the inverted index and Vector Space Model.</p>
+<p>In the <a href="/blog/inverted-index-data-structure/">previous article</a>, we learned the Boolean model on an inverted index. It is used to shortlist documents that match our query. This list is then scored and sorted in decreasing order of relevance using the Vector Space Model. This article explains how the search scoring algorithm works using the vector space model in information retrieval by simplifying the terminologies and jargon.</p>
+<h2 id="how-the-search-scoring-algorithm-selects-the-documents-that-will-be-ranked">How the search scoring algorithm selects the documents that will be ranked</h2>
+<p>When we get a free text query, it can be converted into a boolean query using any of the boolean operators. E.g. the query: <em>“Vector Space Model”</em> and be converted to the query <em>“Vector” OR “Space” OR “Model”</em>. We know how to use an <a href="/blog/inverted-index-data-structure/">inverted index</a> to find documents matching this boolean query. This is explained in the <a href="/blog/inverted-index-data-structure/">previous article</a>.</p>
+<p>Once we have a list of documents that match our query, we try to rank these documents. To achieve this we use the Vector Space Model. To understand this model, we first need to understand what vectors are.</p>
+<h2 id="what-are-vectors-and-vector-space">What are Vectors and Vector Space?</h2>
+<h3 id="vector">Vector</h3>
+<p>According to <a href="https://en.wikipedia.org/wiki/Vector_(mathematics_and_physics)">Wikipedia</a>, a vector is a quantity that has both magnitude and direction. The direction component can be treated as a dimension of a vector. For eg, we can represent a point in geometry in vector notation. The directions or dimensions can be its length in the x-axis and y-axis. The exact quantity of this length is called the magnitude of that dimension. E.g point (2,3) can be represented as <em>2*x + 3*y</em></p>
+<h3 id="vector-space">Vector Space</h3>
+<p>Vector space can be considered as the imaginary space where all vectors that are being represented using similar dimensions can be thought to exist. In this space, we can add, subtract or multiply the vectors with each other</p>
+<h3 id="term-vector">Term vector</h3>
+<p>But what does this mean in our context? How can vectors be used to rank results? Simply stating, we want a way using which we can represent our queries and documents in mathematical notation. In the context of information retrieval, what we are more interested in is <a href="https://www.elastic.co/guide/en/elasticsearch/reference/6.8/docs-termvectors.html#:~:text=Term%20Vectorsedit,the%20realtime%20parameter%20to%20false%20.">term vectors.</a></p>
+<p>Term Vectors are used to represent statistics like the frequency of each term in our query or document. For eg, we can consider each term as a dimension of the vector and the frequency of each term as its magnitude. Once we have the dimension and magnitude known, then this query can be represented in our vector space. Our vector space is composed of all the vectors that can be formed using any of the words present in our documents.</p>
+<p>For example. the query: <em>“Eye for an Eye”</em> can be represented as the following vector: <em>2*(Eye) + 1*(for) + 1*(an).</em> Here the words in parenthesis are the dimensions of the vector and the numbers are the magnitude of each dimension which in this case is just the frequency of the word in our query.</p>
+<h2 id="assigning-weights-to-vectors">Assigning Weights to Vectors</h2>
+<p>Now that we know what term vectors are, the natural question arises, how can this be used to rank results? The answer to this lies in assigning the correct magnitude a.k.a weight to each query or document vector. If we assign correct weights, then the problem of ranking documents reduces to performing some mathematical operations on the vectors of each document and the vector of our query. The result of the operations is our score representing how relevant the document is to the query. The ranking then simply means sorting the list of matching documents in decreasing order of score.</p>
+<p>So let’s try to understand how we find the magnitude of each dimension of our term vectors. The weight is composed of two components:</p>
+<ol>
+<li>Term Frequency</li>
+<li>Inverse Document Frequency</li>
+</ol>
+<h3 id="term-frequency--prioritizing-documents-that-contain-query-words-more-times">Term Frequency – Prioritizing documents that contain query words more times.</h3>
+<p>Suppose there are two documents that contain the words of our query. We will naturally want that the documents containing words in the query more number times to be considered more important than the documents where the words occur fewer number times. Term Frequency component of weight allows us to achieve this. The higher the number of times the term occurs in our query or document, the higher its term frequency.</p>
+<h3 id="inverse-document-frequency--reducing-the-impact-of-common-words">Inverse Document Frequency – Reducing the impact of common words</h3>
+<p>Using just the term frequency alone has a problem. Consider the words that occur very frequently in our language. For eg consider the word “<em>the</em>“. This word would occur in almost all documents of reasonable length. But it does not mean if this word is present in our document we consider that document more relevant. Now consider the word “<em>Vector</em>“. Not all documents will have this word. But the documents that do contain this are more relevant to our query “The Vector Space Model”. So if a word is occurring in all the documents, we want to give it lower importance in ranking. Conversely, the words that are rare should add more weight to the ranking. To do this we use Inverse Document Frequency.</p>
+<p>To calculate inverse document frequency, we count the number of documents that contain this word. This is known as <em>document frequency</em> for the term. Since we want common words to have less impact and rare words to have more impact, we invert the document frequency.</p>
+<p><strong>Inverse Document Frequency = 1/document frequency</strong></p>
+<p>Once we have term frequency and inverse document frequency, we can give the weight using the formula:</p>
+<p><strong>Weight = TF * IDF</strong></p>
+<p>where TF is the number of times a term occurs in the document or query.</p>
+<p>and IDF = Inverse Document Frequency of Term</p>
+<p>If we use this formula for weights in our term vectors, we give more impact to the words that occur more times in the document while minimizing the impact of words that are common in all documents.</p>
+<h2 id="score-calculation-using-term-vectors">Score calculation using Term Vectors</h2>
+<p>Now that we have correct weights assigned to our vectors, the search scoring algorithm is ready to calculate the score. To do this, we first create a term vector of our query. Also, remember we already had the list of documents matching the query using boolean retrieval. Now for each document in the list, we create its term vector. Now we need to perform a mathematical operation between our query vector and the vector of each document in the list. The result of each operation is the score for that particular document to query pair.</p>
+<p>There can be different mathematical functions used to calculate the similarity score. The one that is most commonly used is known as Cosine Similarity.</p>
+<h2 id="cosine-similarity--how-similar-are-the-documents-to-queries">Cosine Similarity – How similar are the documents to queries?</h2>
+<p>Cosine similarity calculates how similar two vectors are. It is measured by the cosine of the angle between two vectors and represents whether two vectors are pointing in roughly the same direction.</p>
+<figure>
+    
+
+      <img src="/uploads/2022/01/cosine-similarity_hu0446f28d25a661b7a083b2a00b970953_25034_1948x612_resize_q75_h2_box_3.webp"height = "auto" width="1948" max-width="100%" 
+      >
+    
+    <figcaption align = "center">Figure: Cosine similarity represents whether two vectors point in roughly the same direction</figcaption>
+  </figure><p>Cosine similarity is calculated using the following formula:</p>
+<figure>
+    
+
+      <img src="/uploads/2022/01/cosine-similarity-formula-1_hu1e7116e3c2735b6944b898cff0ed1c67_38851_1352x482_resize_q75_h2_box_3.webp" alt="The search scoring algorithm uses the following formula to calculate cosine similarity."height = "auto" width="1352" max-width="100%" 
+      >
+    
+    <figcaption align = "center">Figure: The search scoring algorithm uses the following formula to calculate cosine similarity.</figcaption>
+  </figure><p>The result of this operation is our score. Once we have scored each document, we sort our list of matching documents according to the score. The documents that have more terms in common with our query will rank higher. Similarly, the documents that have fewer terms will rank lower.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>In this article, we understood the inner workings of the search scoring algorithm. We learned what vectors are. We then understood how to represent queries and documents as vectors. After that, we used the cosine similarity formula to find the score of the documents to query. At last, we understood that we can use this score to rank documents. This in a nutshell explains how the Vector Space model is used in Information Retrieval to calculate scoring. This is the model that is used in Lucene and hence in Solr and Elasticsearch.</p>
+<h2 id="what-next">Hope you learned something from this article.
+What next?</h2>
+<p>In this article, we learned how search results are scored, but how to find out the list of search results for which we need to calculate the score? This is done in a fast and efficient manner using the inverted index data structure. Read all about it <a href="/blog/inverted-index-data-structure/">here</a>.</p>
+
+          </article>
+        </div>
+      </div>
+      <div class="col-sm-12 col-md-12 col-lg-3">
+        <div id="stickySideBar" class="sticky-sidebar">
+          
+          <aside class="toc">
+              <h5>
+                Table Of Contents
+              </h5>
+              <div class="toc-content">
+                <nav id="TableOfContents">
+  <ul>
+    <li><a href="#how-the-search-scoring-algorithm-selects-the-documents-that-will-be-ranked">How the search scoring algorithm selects the documents that will be ranked</a></li>
+    <li><a href="#what-are-vectors-and-vector-space">What are Vectors and Vector Space?</a>
+      <ul>
+        <li><a href="#vector">Vector</a></li>
+        <li><a href="#vector-space">Vector Space</a></li>
+        <li><a href="#term-vector">Term vector</a></li>
+      </ul>
+    </li>
+    <li><a href="#assigning-weights-to-vectors">Assigning Weights to Vectors</a>
+      <ul>
+        <li><a href="#term-frequency--prioritizing-documents-that-contain-query-words-more-times">Term Frequency – Prioritizing documents that contain query words more times.</a></li>
+        <li><a href="#inverse-document-frequency--reducing-the-impact-of-common-words">Inverse Document Frequency – Reducing the impact of common words</a></li>
+      </ul>
+    </li>
+    <li><a href="#score-calculation-using-term-vectors">Score calculation using Term Vectors</a></li>
+    <li><a href="#cosine-similarity--how-similar-are-the-documents-to-queries">Cosine Similarity – How similar are the documents to queries?</a></li>
+    <li><a href="#conclusion">Conclusion</a></li>
+    <li><a href="#what-next">Hope you learned something from this article.
+What next?</a></li>
+  </ul>
+</nav>
+              </div>
+          </aside>
+          
+
+          
+          <aside class="tags">
+            <h5>Tags</h5>
+            <ul class="tags-ul list-unstyled list-inline">
+              
+              <li class="list-inline-item"><a href="http://localhost:1313/tags/information-retrieval" target="_blank">Information Retrieval</a></li>
+              
+            </ul>
+          </aside>
+          
+
+          
+          <aside class="social">
+            <h5>Social</h5>
+            <div class="social-content">
+              <ul class="list-inline">
+                <li class="list-inline-item text-center">
+                  <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=http%3a%2f%2flocalhost%3a1313%2fblog%2fhow-search-scoring-algorithm-works%2f">
+                    <i class="fab fa-linkedin"></i>
+                  </a>
+                </li>
+                <li class="list-inline-item text-center">
+                  <a target="_blank" href="https://twitter.com/share?text=How%20the%20search%20scoring%20algorithm%20works%20-%20A%20plain%20English%20guide%20to%20Vector%20Space%20Model&url=http%3a%2f%2flocalhost%3a1313%2fblog%2fhow-search-scoring-algorithm-works%2f">
+                    <i class="fab fa-twitter"></i>
+                  </a>
+                </li>
+                <li class="list-inline-item text-center">
+                  <a target="_blank" href="https://api.whatsapp.com/send?text=How%20the%20search%20scoring%20algorithm%20works%20-%20A%20plain%20English%20guide%20to%20Vector%20Space%20Model: http%3a%2f%2flocalhost%3a1313%2fblog%2fhow-search-scoring-algorithm-works%2f">
+                    <i class="fab fa-whatsapp"></i>
+                  </a>
+                </li>
+                <li class="list-inline-item text-center">
+                  <a target="_blank" href='mailto:?subject=How%20the%20search%20scoring%20algorithm%20works%20-%20A%20plain%20English%20guide%20to%20Vector%20Space%20Model&amp;body=Check%20out%20this%20site http%3a%2f%2flocalhost%3a1313%2fblog%2fhow-search-scoring-algorithm-works%2f'>
+                    <i class="fa fa-envelope"></i>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </aside>
+          
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12 col-lg-9 p-4">
+        
+      </div>
+    </div>
+  </div>
+  <button class="p-2 px-3" onclick="topFunction()" id="topScroll">
+    <i class="fas fa-angle-up"></i>
+  </button>
+</section>
+
+
+<div class="progress">
+  <div id="scroll-progress-bar" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+</div>
+<Script src="/js/scrollProgressBar.js"></script>
+
+
+<script>
+  var topScroll = document.getElementById("topScroll");
+  window.onscroll = function() {scrollFunction()};
+
+  function scrollFunction() {
+    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+      topScroll.style.display = "block";
+    } else {
+      topScroll.style.display = "none";
+    }
+  }
+
+  function topFunction() {
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+  }
+
+  
+  let stickySideBarElem = document.getElementById("stickySideBar");
+  let stickyNavBar =  true ;
+  if(stickyNavBar) {
+    let headerElem = document.getElementById("profileHeader");
+    let headerHeight = headerElem.offsetHeight + 15;
+    stickySideBarElem.style.top = headerHeight + "px";
+  } else {
+    stickySideBarElem.style.top = "50px";
+  }
+</script>
+
+
+<script src="/js/readingTime.js"></script>
+
+
+
+  </div><footer>
+    
+ 
+
+<div class="text-center pt-2">
+    
+    <span class="px-1">
+        <a href="https://github.com/IshanUpmanyu" aria-label="github">
+            <svg xmlns="http://www.w3.org/2000/svg" width="2.7em" height="2.7em" viewBox="0 0 1792 1792">
+                <path
+                    d="M522 1352q-8 9-20-3-13-11-4-19 8-9 20 3 12 11 4 19zm-42-61q9 12 0 19-8 6-17-7t0-18q9-7 17 6zm-61-60q-5 7-13 2-10-5-7-12 3-5 13-2 10 5 7 12zm31 34q-6 7-16-3-9-11-2-16 6-6 16 3 9 11 2 16zm129 112q-4 12-19 6-17-4-13-15t19-7q16 5 13 16zm63 5q0 11-16 11-17 2-17-11 0-11 16-11 17-2 17 11zm58-10q2 10-14 14t-18-8 14-15q16-2 18 9zm964-956v960q0 119-84.5 203.5t-203.5 84.5h-224q-16 0-24.5-1t-19.5-5-16-14.5-5-27.5v-239q0-97-52-142 57-6 102.5-18t94-39 81-66.5 53-105 20.5-150.5q0-121-79-206 37-91-8-204-28-9-81 11t-92 44l-38 24q-93-26-192-26t-192 26q-16-11-42.5-27t-83.5-38.5-86-13.5q-44 113-7 204-79 85-79 206 0 85 20.5 150t52.5 105 80.5 67 94 39 102.5 18q-40 36-49 103-21 10-45 15t-57 5-65.5-21.5-55.5-62.5q-19-32-48.5-52t-49.5-24l-20-3q-21 0-29 4.5t-5 11.5 9 14 13 12l7 5q22 10 43.5 38t31.5 51l10 23q13 38 44 61.5t67 30 69.5 7 55.5-3.5l23-4q0 38 .5 103t.5 68q0 22-11 33.5t-22 13-33 1.5h-224q-119 0-203.5-84.5t-84.5-203.5v-960q0-119 84.5-203.5t203.5-84.5h960q119 0 203.5 84.5t84.5 203.5z" />
+
+                <metadata>
+                    <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                        xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:dc="http://purl.org/dc/elements/1.1/">
+                        <rdf:Description about="https://iconscout.com/legal#licenses"
+                            dc:title="Github, Online, Project, Hosting, Square"
+                            dc:description="Github, Online, Project, Hosting, Square" dc:publisher="Iconscout"
+                            dc:date="2016-12-14" dc:format="image/svg+xml" dc:language="en">
+                            <dc:creator>
+                                <rdf:Bag>
+                                    <rdf:li>Font Awesome</rdf:li>
+                                </rdf:Bag>
+                            </dc:creator>
+                        </rdf:Description>
+                    </rdf:RDF>
+                </metadata>
+            </svg>
+        </a>
+    </span>
+    
+
+    
+    <span class="px-1">
+        <a href="https://www.linkedin.com/in/ishan-upamanyu-softwaredevelopment/" aria-label="linkedin">
+            <svg xmlns="http://www.w3.org/2000/svg" width='2.4em' height='2.4em' fill="#fff" aria-label="LinkedIn"
+                viewBox="0 0 512 512">
+                <rect width="512" height="512" fill="#0077b5" rx="15%" />
+                <circle cx="142" cy="138" r="37" />
+                <path stroke="#fff" stroke-width="66" d="M244 194v198M142 194v198" />
+                <path d="M276 282c0-20 13-40 36-40 24 0 33 18 33 45v105h66V279c0-61-32-89-76-89-34 0-51 19-59 32" />
+            </svg>
+        </a>
+    </span>
+    
+
+    
+
+    
+
+    
+</div><div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-4 text-center">
+            <div class="pb-2">
+                <a href="http://localhost:1313/" title="Ishan&#39;s Blog">
+                    <img alt="Footer logo" src="/fav.png"
+                        height="40px" width="40px">
+                </a>
+            </div>
+            &copy; 2024  All rights reserved
+            <div class="text-secondary">
+                Made with
+                <span class="text-danger">
+                    &#10084;
+                </span>
+                and
+                <a href="https://github.com/gurusabarish/hugo-profile" target="_blank"
+                    title="Designed and developed by gurusabarish">
+                    Hugo Profile
+                </a>
+            </div>
+        </div>
+    </div>
+</div></footer><script src="/bootstrap-5/js/bootstrap.bundle.min.js"></script>
+<script>
+    if (document.body.className.includes("dark")) {
+        document.body.classList.remove('dark');
+        localStorage.setItem("pref-theme", 'light');
+    }
+</script>
+
+
+
+
+    <script src="/js/search.js"></script>
+
+
+
+
+
+<!-- MathJax -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js" integrity="sha384-M5jmNxKC9EVnuqeMwRHvFuYUE8Hhp0TgBruj/GZRkYtiMrCRgH7yvv5KY+Owi7TW" crossorigin="anonymous"></script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['\\(','\\)']],
+        displayMath: [['$$','$$'], ['\[','\]']],
+        processEscapes: true,
+        processEnvironments: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+        TeX: { equationNumbers: { autoNumber: "AMS" },
+             extensions: ["AMSmath.js", "AMSsymbols.js"] }
+      }
+    });
+</script>
+
+
+
+
+
+
+
+
+  <section id="search-content" class="py-2">
+    <div class="container" id="search-results"></div>
+  </section>
+</body>
+
+</html>

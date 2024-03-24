@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html>
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta http-equiv="Accept-CH" content="DPR, Viewport-Width, Width">
+<link rel="icon" href=/fav.png type="image/gif">
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Alata&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+>
+<link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Alata&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+      media="print" onload="this.media='all'" />
+<noscript>
+  <link
+          href="https://fonts.googleapis.com/css2?family=Alata&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+          rel="stylesheet">
+</noscript>
+
+
+<link rel="stylesheet" href="/css/font.css" media="all">
+
+
+
+<meta property="og:title" content="How the inverted index data structure works - The detailed explanation you wanted." />
+<meta property="og:description" content="You might have done a google search. Or you might have tried finding that favorite Ed Sheeran Video on Youtube. You may have tried finding the latest gadget you crave on Amazon. If your answer to any of the above questions was yes, you have already used an inverted index.
+These websites work with millions and billions of web pages, songs, or products. Have you wondered how the results appear so fast?" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/blog/inverted-index-data-structure/" /><meta property="article:section" content="blog" />
+<meta property="article:published_time" content="2022-01-24T20:37:30+05:30" />
+<meta property="article:modified_time" content="2022-01-24T20:37:30+05:30" /><meta property="og:site_name" content="Ishan Upamanyu&#39;s Blog" />
+
+<meta name="twitter:card" content="summary"/><meta name="twitter:title" content="How the inverted index data structure works - The detailed explanation you wanted."/>
+<meta name="twitter:description" content="You might have done a google search. Or you might have tried finding that favorite Ed Sheeran Video on Youtube. You may have tried finding the latest gadget you crave on Amazon. If your answer to any of the above questions was yes, you have already used an inverted index.
+These websites work with millions and billions of web pages, songs, or products. Have you wondered how the results appear so fast?"/>
+
+
+<link rel="stylesheet" href="/bootstrap-5/css/bootstrap.min.css" media="all"><link rel="stylesheet" href="/css/header.css" media="all">
+<link rel="stylesheet" href="/css/footer.css" media="all">
+
+
+<link rel="stylesheet" href="/css/theme.css" media="all">
+
+
+
+
+<style>
+    :root {
+        --text-color: #F5F5F5;
+        --text-secondary-color: #F5F5F5;
+        --background-color: #313552;
+        --secondary-background-color: #64ffda1a;
+        --primary-color: #F1E0AC;
+        --secondary-color: #30475E;
+
+         
+        --text-color-dark: #e4e6eb;
+        --text-secondary-color-dark: #b0b3b8;
+        --background-color-dark: #18191a;
+        --secondary-background-color-dark: #212529;
+        --primary-color-dark: #ffffff;
+        --secondary-color-dark: #212529;
+    }
+    body {
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        text-align: left;
+    }
+
+    html {
+        background-color: var(--background-color) !important;
+    }
+
+    body::-webkit-scrollbar {
+        height: 0px;
+        width: 8px;
+        background-color: var(--background-color);
+    }
+    
+    ::-webkit-scrollbar-track {
+        border-radius: 1rem;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        border-radius: 1rem;
+        background: #b0b0b0;
+        outline: 1px solid var(--background-color);
+    }
+
+    #search-content::-webkit-scrollbar {
+        width: .5em;
+        height: .1em;
+        background-color: var(--background-color);
+    }
+</style>
+
+
+<meta name="description" content="">
+<link rel="stylesheet" href="/css/single.css">
+
+
+<script defer src="/fontawesome-6/all-6.4.2.js"></script>
+
+  <title>
+How the inverted index data structure works - The detailed explanation you wanted. | Ishan&#39;s Blog
+
+  </title>
+</head>
+
+<body class="light">
+  
+  
+<script>
+    let localStorageValue = localStorage.getItem("pref-theme");
+    let mediaQuery = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    switch (localStorageValue) {
+        case "dark":
+            document.body.classList.add('dark');
+            break;
+        case "light":
+            document.body.classList.remove('dark');
+            break;
+        default:
+            if (mediaQuery) {
+                document.body.classList.add('dark');
+            }
+            break;
+    }
+</script>
+
+
+
+
+<script>
+    var prevScrollPos = window.pageYOffset;
+    window.addEventListener("scroll", function showHeaderOnScroll() {
+        let profileHeaderElem = document.getElementById("profileHeader");
+        let currentScrollPos = window.pageYOffset;
+        let resetHeaderStyle = false;
+        let showNavBarOnScrollUp =  true ;
+        let showNavBar = showNavBarOnScrollUp ? prevScrollPos > currentScrollPos : currentScrollPos > 0;
+        if (showNavBar) {
+            profileHeaderElem.classList.add("showHeaderOnTop");
+        } else {
+            resetHeaderStyle = true;
+        }
+        if(currentScrollPos === 0) {
+            resetHeaderStyle = true;
+        }
+        if(resetHeaderStyle) {
+            profileHeaderElem.classList.remove("showHeaderOnTop");
+        }
+        prevScrollPos = currentScrollPos;        
+    });
+</script>
+
+
+
+<header id="profileHeader">
+    <nav class="pt-3 navbar navbar-expand-lg animate">
+        <div class="container-fluid mx-xs-2 mx-sm-5 mx-md-5 mx-lg-5">
+            
+            <a class="navbar-brand primary-font text-wrap" href="/">
+                
+                <img src="/fav.png" width="30" height="30"
+                    class="d-inline-block align-top">
+                Ishan Upamanyu
+                
+            </a>
+
+            
+                <div>
+                    <input id="search" autocomplete="off" class="form-control mr-sm-2 d-none d-md-block" placeholder='Ctrl &#43; k to Search...'
+                        aria-label="Search" oninput="searchOnChange(event)">
+                </div>
+            
+
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+                aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                <svg aria-hidden="true" height="24" viewBox="0 0 16 16" version="1.1" width="24" data-view-component="true">
+                    <path fill-rule="evenodd" d="M1 2.75A.75.75 0 011.75 2h12.5a.75.75 0 110 1.5H1.75A.75.75 0 011 2.75zm0 5A.75.75 0 011.75 7h12.5a.75.75 0 110 1.5H1.75A.75.75 0 011 7.75zM1.75 12a.75.75 0 100 1.5h12.5a.75.75 0 100-1.5H1.75z"></path>
+                </svg>
+            </button>
+
+            
+            <div class="collapse navbar-collapse text-wrap primary-font" id="navbarContent">
+                <ul class="navbar-nav ms-auto text-center">
+                    
+                        <li class="nav-item navbar-text d-block d-md-none">
+                            <div class="nav-link">
+                                <input id="search" autocomplete="off" class="form-control mr-sm-2" placeholder='Ctrl &#43; k to Search...' aria-label="Search" oninput="searchOnChange(event)">
+                            </div>
+                        </li>
+                    
+
+                    
+                    <li class="nav-item navbar-text">
+                        <a class="nav-link" href="/#about" aria-label="about">
+                            About Me
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li class="nav-item navbar-text">
+                        <a class="nav-link" href="/#experience"
+                            aria-label="experience">
+                            Experience
+                        </a>
+                    </li>
+                    
+
+                    
+
+                    
+
+                    
+
+                    
+                    <li class="nav-item navbar-text">
+                        <a class="nav-link" href="/#contact"
+                            aria-label="contact">
+                            Contact
+                        </a>
+                    </li>
+                    
+
+                    
+                    
+                    
+                    
+                    <li class="nav-item navbar-text">
+                        <a class="nav-link" href="/blog" title="Blog posts">
+                            
+                            Blog
+                        </a>
+                    </li>
+                    
+                    
+
+                    
+
+                </ul>
+
+            </div>
+        </div>
+    </nav>
+</header>
+<div id="content">
+<section id="single">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-sm-12 col-md-12 col-lg-9">
+        <div class="pr-lg-4">
+          <div class="title mb-5">
+            <h1 class="text-center mb-4">How the inverted index data structure works - The detailed explanation you wanted.</h1>
+            <div class="text-center">
+              Ishan Upamanyu 
+              <small>|</small>
+              Jan 24, 2022
+
+              
+              <span id="readingTime">
+                min read
+              </span>
+              
+            </div>
+          </div>
+          
+          <div class="featured-image">
+                <img class="img-fluid mx-auto d-block"  src="/uploads/2022/01/inverted-index_hue20a64c8a9c74290b3c17e241162f4c4_105386_2000x1234_resize_q75_h2_box_3.webp" class="card-img-top" alt="/uploads/2022/01/inverted-index.png" height = "auto" width="2000" max-width="100%">
+            
+          </div>
+          
+          <article class="page-content  p-2">
+          <p>You might have done a google search. Or you might have tried finding that favorite Ed Sheeran Video on Youtube. You may have tried finding the latest gadget you crave on Amazon. If your answer to any of the above questions was yes, you have already used an inverted index.<br>
+These websites work with millions and billions of web pages, songs, or products. Have you wondered how the results appear so fast? It happens because these websites have already built an inverted index of the information. When you search for something, instead of reading all the documents from starting to end, these sites lookup in an inverted index data structure.</p>
+<h2 id="what-is-an-inverted-index-in-information-retrieval">What is an inverted index in information retrieval</h2>
+<p>An inverted index data structure allows you to find the information you are looking for in a fast and efficient manner. It does this by indexing the words contained in a document. But you must be wondering if we are simply indexing the document then why call it an “inverted” index?</p>
+<h2 id="why-is-it-called-an-inverted-index">Why is it called an “inverted” index?</h2>
+<p>In a normal structure, we have a document that contains words. So to find the word you read the complete document from beginning to end and stop when you find a word. But if our intent is to find if a document contains a word, we can do better.</p>
+<p>Instead of storing documents to word mapping, an inverted index inverts this process. i.e it stores a mapping for words to document. We have a word that points to the list of documents that contains that word. So now if you want to find all documents that contain a word, we have that available as a list. In this way we have “inverted” the process and hence we call it an inverted index.</p>
+<h2 id="how-to-create-an-inverted-index">How to create an inverted index</h2>
+<p>Let’s dive deep and understand the structure of an inverted index data structure. But before we do that, let’s assume we want to add the following documents in our index:</p>
+<ul>
+<li>Document1: My name is Ishan Upamanyu</li>
+<li>Document2: Abhishek Upmanyu is a great comedian</li>
+<li>Document3: I would like to name my dog as Bruno</li>
+<li>Document4: Alexander the great.</li>
+<li>Document5: Abhishek is studying in Delhi.</li>
+</ul>
+<p>Before we insert the words into our index, we need to do some pre-processing.</p>
+<h2 id="preprocessing-before-creating-the-index">Preprocessing before creating the index</h2>
+<h3 id="tokenization">Tokenization</h3>
+<p>A document contains sentences. We need to break the sentences down into individual tokens. A token is the smallest unit that we can insert in our inverted index. We may split different words into different terms or we may split many words into a single token depending on our need. For eg: Consider the phrase: “I live in New Delhi”. We can break it into the following tokens:</p>
+<ul>
+<li>[I, live, in, New, Delhi]<br>
+or</li>
+<li>[I, live, in, New Delhi]</li>
+</ul>
+<p>The documents we have will be broken down into the following tokens:</p>
+<ul>
+<li>Document1: [My, name, is, Ishan, Upamanyu]</li>
+<li>Document2: [Abhishek, Upmanyu, is, a, great, comedian]</li>
+<li>Document3: [I, would, like, to, name, my, dog, as, Bruno]</li>
+<li>Document4: [Alexander, the, great.]</li>
+<li>Document5: [Abhishek, is, studying, in, Delhi.]</li>
+</ul>
+<p>Once we have our individual tokens, we proceed to the next step.</p>
+<h3 id="stop-words">Stop Words</h3>
+<p>We often have a lot of words like “a”, “and”, “the”, “is” etc that are used very frequently in language . These would not add much meaning to the search query. We can choose to remove these words from our tokens so that they are not added in the inverted index. These words that we want to remove are known as <em>stop words</em>. We may also want to remove punctuation in this step.</p>
+<p>The output of this step would be:</p>
+<ul>
+<li>Document1: [My, name, Ishan, Upamanyu]</li>
+<li>Document2: [Abhishek, Upmanyu, great, comedian]</li>
+<li>Document3: [I, would, like, to, name, my, dog, as, Bruno]</li>
+<li>Document4: [Alexander, great]</li>
+<li>Document5: [Abhishek, studying, Delhi]</li>
+</ul>
+<h3 id="stemming">Stemming</h3>
+<p>We have a document containing the word “studying”. But suppose someone searches for the word “study”. Our index would not contain the queried word and we would fail to return a relevant document. So to solve this problem we convert the tokens to their root form. Stemming is the first way to do this. Stemming tries to remove the last few characters of the token to try and guess the right root word. For e.g, the words “care” and “caring” would be converted to the word “car” as stemming removed the last few correctors.</p>
+<p>As you may have noticed, stemming might result in unexpected output. Like our searches for the word “car” would start to match with the documents containing the word “care”. This would happen because “care” is stemmed down to “car”. This is not what we want. We solve this problem with Lemmatization.</p>
+<h3 id="lemmatization">Lemmatization</h3>
+<p>Lemmatization converts the token to its meaningful base form. Like it would convert “caring” to “care” and not “car”. It does this by using dictionaries and doing a morphological analysis to reach the base form known as <em>Lemma</em>.</p>
+<p>Some search systems also standardize the case of the token. They might convert all tokens to lower case. This has an advantage. Searches will start to match regardless of the case difference in document and query. For e.g. searching for “upmanyu” would match the document containing the word “Upmanyu”</p>
+<p>After completing all the preprocessing, our tokens look as follows:</p>
+<ul>
+<li>Document1: [my, name, ishan, upmanyu]</li>
+<li>Document2: [abhishek, upmanyu, great, comedian]</li>
+<li>Document3: [i, would, like, to, name, my, dog, as, bruno]</li>
+<li>Document4: [alexander, great]</li>
+<li>Document5: [abhishek, study, delhi]</li>
+</ul>
+<h2 id="building-inverted-index">Building inverted index</h2>
+<p>Now that we have our pre-processing done, we can start building our inverted index data structure.</p>
+<p><strong>Step 1:</strong> First of all we create a table with a list of all the words and the document in which they occur.</p>
+<figure>
+    
+
+      <img src="/uploads/2022/01/token-doc-id-mapping_hubadca0830476e33227cdb576daaa4ede_40150_1300x1172_resize_q75_h2_box_3.webp" alt="word to doc id mapping"height = "auto" width="1300" max-width="100%" 
+      >
+    
+    <figcaption align = "center">Figure: Create the word to doc id mapping </figcaption>
+  </figure><p><strong>Step 2:</strong> Now we try to group words together sort them and note their frequency. Also, for the same word, we put the document id in a list and sort this list of document ids. The result now looks like this:</p>
+<figure>
+    
+
+      <img src="/uploads/2022/01/inverted-index_hue20a64c8a9c74290b3c17e241162f4c4_105386_2000x1234_resize_q75_h2_box_3.webp" alt="Documents and Postings - the internals of inverted index data structure"height = "auto" width="2000" max-width="100%" 
+      >
+    
+    <figcaption align = "center">Figure: Documents and Postings – the internals of inverted index data structure</figcaption>
+  </figure><p>This is the structure of our inverted index data structure. As you can see, it has two main components:</p>
+<ul>
+<li>Dictionary</li>
+<li>Posting List</li>
+</ul>
+<h3 id="dictionary-and-postings">Dictionary and Postings</h3>
+<p>The part of the index which contains the word with its frequency is called a dictionary. It also stores a pointer to the list of documents containing that word. This list is called Postings. Each token stored in our dictionary is called a term. We can store the dictionary as an array or as a map depending on the implementation.</p>
+<p>In array representation, we use binary search to find the token we are looking for. In a map implementation, we use hashing to find the token. We will soon see this in action when we see how we do retrieval, i.e. find documents matching our query using an inverted index data structure.</p>
+<h4 id="token-vs-term">Token vs Term</h4>
+<p>A token is an output of splitting the sentence into smaller chunks. All these chunks will not become a part of our index. We may remove some of them or convert some of them to their root form as we saw in pre-processing step.</p>
+<p>A term is an actual entry that gets added in the inverted index dictionary. It is what is actually present in the index.</p>
+<h2 id="how-to-use-the-inverted-index-to-find-what-we-are-looking-for">How to use the inverted index to find what we are looking for</h2>
+<p>Now we know the internal structure of an inverted index data strucure. We also know how it is created. The next step is trying to understand how we can find the documents of interest in our inverted index data structure.</p>
+<p>Let’s say we want to find all documents matching our search query.</p>
+<h3 id="finding-all-documents-that-match-a-boolean-query">Finding all documents that match a boolean query.</h3>
+<p>Boolean retrieval deals with queries combining multiple terms using Boolean operators. Boolean operators are AND, OR, NOT. For e.g. we may issue the following query: <em>ishan AND upmanyu</em></p>
+<p>With this query, we want to get the documents that contain both the search terms i.e. <em>ishan</em> and <em>upmanyu</em></p>
+<p>To process this we use the following steps:</p>
+<ol>
+<li>Search for <em>ishan</em> in the Dictionary.</li>
+<li>Locate its postings.</li>
+<li>Search for <em>upmanyu</em> in the Dictionary.</li>
+<li>Locate its postings.</li>
+<li>Intersect the two postings.</li>
+</ol>
+<p>For our inverted index, the process looks as follows:</p>
+<figure>
+    
+
+      <img src="/uploads/2022/01/dictionary-to-posting_huee81a7ebaa0b7a6a70844f0be8297bea_31354_904x474_resize_q75_h2_box_3.webp"height = "auto" width="904" max-width="100%" 
+      >
+    
+    <figcaption align = "center">Figure: Answering Boolean AND Queries</figcaption>
+  </figure><p>So for this query, we will return only <em>Document1</em></p>
+<p>Similarly, for the query <em>ishan</em> OR <em>upmanyu</em> we do the following steps:</p>
+<ol>
+<li>Search for <em>ishan</em> in the Dictionary.</li>
+<li>Locate its postings.</li>
+<li>Search for <em>upmanyu</em> in the Dictionary.</li>
+<li>Locate its postings.</li>
+<li>Take the union of the two postings.</li>
+</ol>
+<figure>
+    
+
+      <img src="/uploads/2022/01/union_hu3892149933e0f8a5739ebf55dc8bd13f_29464_860x422_resize_q75_h2_box_3.webp"height = "auto" width="860" max-width="100%" 
+      >
+    
+    <figcaption align = "center">Figure: Ansering boolean OR queries</figcaption>
+  </figure><p>So for this query, we will return both <em>Document1</em> and <em>Document2</em>.</p>
+<p><strong>EXERCISE:</strong> Try thinking about how NOT operator will be implemented and write your answer down in the comments.</p>
+<p>Thus we conclude how to find something in an inverted index data structure.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>In this article, we understood in detail what an inverted index data structure is. We understood the internal structure of the inverted index data structure. We also covered how the inverted index data structure is created and how it can be used to find the information we are looking for.</p>
+<h2 id="what-next">What next?</h2>
+<p>Now that you understand what an inverted index data structure is and how it works aren’t you curious that how is it used to rank results in a search engine? The answer is the vector space model of Information Retrieval. I recommend you read all about it <a href="/blog/how-search-scoring-algorithm-works/">here</a>.</p>
+<h2 id="references">References</h2>
+<ul>
+<li>A first take at building an inverted index: <a href="https://nlp.stanford.edu/IR-book/html/htmledition/a-first-take-at-building-an-inverted-index-1.html">https://nlp.stanford.edu/IR-book/html/htmledition/a-first-take-at-building-an-inverted-index-1.html</a></li>
+<li>Boolean Retrieval: <a href="https://nlp.stanford.edu/IR-book/html/htmledition/boolean-retrieval-1.html">https://nlp.stanford.edu/IR-book/html/htmledition/boolean-retrieval-1.html</a></li>
+<li>Difference Between Stemming and Lemmatization: <a href="https://stackoverflow.com/questions/1787110/what-is-the-difference-between-lemmatization-vs-stemming#:~:text=Stemming%20just%20removes%20or%20stems,form%2C%20which%20is%20called%20Lemma">https://stackoverflow.com/questions/1787110/what-is-the-difference-between-lemmatization-vs-stemming#:~:text=Stemming just removes or stems,form%2C which is called Lemma</a>.</li>
+</ul>
+
+          </article>
+        </div>
+      </div>
+      <div class="col-sm-12 col-md-12 col-lg-3">
+        <div id="stickySideBar" class="sticky-sidebar">
+          
+          <aside class="toc">
+              <h5>
+                Table Of Contents
+              </h5>
+              <div class="toc-content">
+                <nav id="TableOfContents">
+  <ul>
+    <li><a href="#what-is-an-inverted-index-in-information-retrieval">What is an inverted index in information retrieval</a></li>
+    <li><a href="#why-is-it-called-an-inverted-index">Why is it called an “inverted” index?</a></li>
+    <li><a href="#how-to-create-an-inverted-index">How to create an inverted index</a></li>
+    <li><a href="#preprocessing-before-creating-the-index">Preprocessing before creating the index</a>
+      <ul>
+        <li><a href="#tokenization">Tokenization</a></li>
+        <li><a href="#stop-words">Stop Words</a></li>
+        <li><a href="#stemming">Stemming</a></li>
+        <li><a href="#lemmatization">Lemmatization</a></li>
+      </ul>
+    </li>
+    <li><a href="#building-inverted-index">Building inverted index</a>
+      <ul>
+        <li><a href="#dictionary-and-postings">Dictionary and Postings</a></li>
+      </ul>
+    </li>
+    <li><a href="#how-to-use-the-inverted-index-to-find-what-we-are-looking-for">How to use the inverted index to find what we are looking for</a>
+      <ul>
+        <li><a href="#finding-all-documents-that-match-a-boolean-query">Finding all documents that match a boolean query.</a></li>
+      </ul>
+    </li>
+    <li><a href="#conclusion">Conclusion</a></li>
+    <li><a href="#what-next">What next?</a></li>
+    <li><a href="#references">References</a></li>
+  </ul>
+</nav>
+              </div>
+          </aside>
+          
+
+          
+          <aside class="tags">
+            <h5>Tags</h5>
+            <ul class="tags-ul list-unstyled list-inline">
+              
+              <li class="list-inline-item"><a href="http://localhost:1313/tags/information-retrieval" target="_blank">Information Retrieval</a></li>
+              
+            </ul>
+          </aside>
+          
+
+          
+          <aside class="social">
+            <h5>Social</h5>
+            <div class="social-content">
+              <ul class="list-inline">
+                <li class="list-inline-item text-center">
+                  <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=http%3a%2f%2flocalhost%3a1313%2fblog%2finverted-index-data-structure%2f">
+                    <i class="fab fa-linkedin"></i>
+                  </a>
+                </li>
+                <li class="list-inline-item text-center">
+                  <a target="_blank" href="https://twitter.com/share?text=How%20the%20inverted%20index%20data%20structure%20works%20-%20The%20detailed%20explanation%20you%20wanted.&url=http%3a%2f%2flocalhost%3a1313%2fblog%2finverted-index-data-structure%2f">
+                    <i class="fab fa-twitter"></i>
+                  </a>
+                </li>
+                <li class="list-inline-item text-center">
+                  <a target="_blank" href="https://api.whatsapp.com/send?text=How%20the%20inverted%20index%20data%20structure%20works%20-%20The%20detailed%20explanation%20you%20wanted.: http%3a%2f%2flocalhost%3a1313%2fblog%2finverted-index-data-structure%2f">
+                    <i class="fab fa-whatsapp"></i>
+                  </a>
+                </li>
+                <li class="list-inline-item text-center">
+                  <a target="_blank" href='mailto:?subject=How%20the%20inverted%20index%20data%20structure%20works%20-%20The%20detailed%20explanation%20you%20wanted.&amp;body=Check%20out%20this%20site http%3a%2f%2flocalhost%3a1313%2fblog%2finverted-index-data-structure%2f'>
+                    <i class="fa fa-envelope"></i>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </aside>
+          
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-md-12 col-lg-9 p-4">
+        
+      </div>
+    </div>
+  </div>
+  <button class="p-2 px-3" onclick="topFunction()" id="topScroll">
+    <i class="fas fa-angle-up"></i>
+  </button>
+</section>
+
+
+<div class="progress">
+  <div id="scroll-progress-bar" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+</div>
+<Script src="/js/scrollProgressBar.js"></script>
+
+
+<script>
+  var topScroll = document.getElementById("topScroll");
+  window.onscroll = function() {scrollFunction()};
+
+  function scrollFunction() {
+    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+      topScroll.style.display = "block";
+    } else {
+      topScroll.style.display = "none";
+    }
+  }
+
+  function topFunction() {
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+  }
+
+  
+  let stickySideBarElem = document.getElementById("stickySideBar");
+  let stickyNavBar =  true ;
+  if(stickyNavBar) {
+    let headerElem = document.getElementById("profileHeader");
+    let headerHeight = headerElem.offsetHeight + 15;
+    stickySideBarElem.style.top = headerHeight + "px";
+  } else {
+    stickySideBarElem.style.top = "50px";
+  }
+</script>
+
+
+<script src="/js/readingTime.js"></script>
+
+
+
+  </div><footer>
+    
+ 
+
+<div class="text-center pt-2">
+    
+    <span class="px-1">
+        <a href="https://github.com/IshanUpmanyu" aria-label="github">
+            <svg xmlns="http://www.w3.org/2000/svg" width="2.7em" height="2.7em" viewBox="0 0 1792 1792">
+                <path
+                    d="M522 1352q-8 9-20-3-13-11-4-19 8-9 20 3 12 11 4 19zm-42-61q9 12 0 19-8 6-17-7t0-18q9-7 17 6zm-61-60q-5 7-13 2-10-5-7-12 3-5 13-2 10 5 7 12zm31 34q-6 7-16-3-9-11-2-16 6-6 16 3 9 11 2 16zm129 112q-4 12-19 6-17-4-13-15t19-7q16 5 13 16zm63 5q0 11-16 11-17 2-17-11 0-11 16-11 17-2 17 11zm58-10q2 10-14 14t-18-8 14-15q16-2 18 9zm964-956v960q0 119-84.5 203.5t-203.5 84.5h-224q-16 0-24.5-1t-19.5-5-16-14.5-5-27.5v-239q0-97-52-142 57-6 102.5-18t94-39 81-66.5 53-105 20.5-150.5q0-121-79-206 37-91-8-204-28-9-81 11t-92 44l-38 24q-93-26-192-26t-192 26q-16-11-42.5-27t-83.5-38.5-86-13.5q-44 113-7 204-79 85-79 206 0 85 20.5 150t52.5 105 80.5 67 94 39 102.5 18q-40 36-49 103-21 10-45 15t-57 5-65.5-21.5-55.5-62.5q-19-32-48.5-52t-49.5-24l-20-3q-21 0-29 4.5t-5 11.5 9 14 13 12l7 5q22 10 43.5 38t31.5 51l10 23q13 38 44 61.5t67 30 69.5 7 55.5-3.5l23-4q0 38 .5 103t.5 68q0 22-11 33.5t-22 13-33 1.5h-224q-119 0-203.5-84.5t-84.5-203.5v-960q0-119 84.5-203.5t203.5-84.5h960q119 0 203.5 84.5t84.5 203.5z" />
+
+                <metadata>
+                    <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                        xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:dc="http://purl.org/dc/elements/1.1/">
+                        <rdf:Description about="https://iconscout.com/legal#licenses"
+                            dc:title="Github, Online, Project, Hosting, Square"
+                            dc:description="Github, Online, Project, Hosting, Square" dc:publisher="Iconscout"
+                            dc:date="2016-12-14" dc:format="image/svg+xml" dc:language="en">
+                            <dc:creator>
+                                <rdf:Bag>
+                                    <rdf:li>Font Awesome</rdf:li>
+                                </rdf:Bag>
+                            </dc:creator>
+                        </rdf:Description>
+                    </rdf:RDF>
+                </metadata>
+            </svg>
+        </a>
+    </span>
+    
+
+    
+    <span class="px-1">
+        <a href="https://www.linkedin.com/in/ishan-upamanyu-softwaredevelopment/" aria-label="linkedin">
+            <svg xmlns="http://www.w3.org/2000/svg" width='2.4em' height='2.4em' fill="#fff" aria-label="LinkedIn"
+                viewBox="0 0 512 512">
+                <rect width="512" height="512" fill="#0077b5" rx="15%" />
+                <circle cx="142" cy="138" r="37" />
+                <path stroke="#fff" stroke-width="66" d="M244 194v198M142 194v198" />
+                <path d="M276 282c0-20 13-40 36-40 24 0 33 18 33 45v105h66V279c0-61-32-89-76-89-34 0-51 19-59 32" />
+            </svg>
+        </a>
+    </span>
+    
+
+    
+
+    
+
+    
+</div><div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-4 text-center">
+            <div class="pb-2">
+                <a href="http://localhost:1313/" title="Ishan&#39;s Blog">
+                    <img alt="Footer logo" src="/fav.png"
+                        height="40px" width="40px">
+                </a>
+            </div>
+            &copy; 2024  All rights reserved
+            <div class="text-secondary">
+                Made with
+                <span class="text-danger">
+                    &#10084;
+                </span>
+                and
+                <a href="https://github.com/gurusabarish/hugo-profile" target="_blank"
+                    title="Designed and developed by gurusabarish">
+                    Hugo Profile
+                </a>
+            </div>
+        </div>
+    </div>
+</div></footer><script src="/bootstrap-5/js/bootstrap.bundle.min.js"></script>
+<script>
+    if (document.body.className.includes("dark")) {
+        document.body.classList.remove('dark');
+        localStorage.setItem("pref-theme", 'light');
+    }
+</script>
+
+
+
+
+    <script src="/js/search.js"></script>
+
+
+
+
+
+<!-- MathJax -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js" integrity="sha384-M5jmNxKC9EVnuqeMwRHvFuYUE8Hhp0TgBruj/GZRkYtiMrCRgH7yvv5KY+Owi7TW" crossorigin="anonymous"></script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [['\\(','\\)']],
+        displayMath: [['$$','$$'], ['\[','\]']],
+        processEscapes: true,
+        processEnvironments: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+        TeX: { equationNumbers: { autoNumber: "AMS" },
+             extensions: ["AMSmath.js", "AMSsymbols.js"] }
+      }
+    });
+</script>
+
+
+
+
+
+
+
+
+  <section id="search-content" class="py-2">
+    <div class="container" id="search-results"></div>
+  </section>
+</body>
+
+</html>
