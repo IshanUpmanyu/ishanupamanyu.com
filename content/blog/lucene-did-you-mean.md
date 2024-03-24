@@ -177,7 +177,7 @@ In this blog post, we understood what `did you mean` feature in google is. Then 
 What Next?
 ----------
 
-If you enjoyed this article I am guessing you might be using Lucene to create a search application. I also created a search engine to search on English Wikipedia Articles. Do you want to know how I did it? Read all about it [here](/blog/how-i-created-a-search-engine-for-wikipedia-articles/).
+If you enjoyed this article I am guessing you might be using Lucene to create a search application. I also created a search engine to search on English Wikipedia Articles. Do you want to know how I did it? Read all about it [here](/blog/search-engine-for-wikipedia-articles/).
 
 References
 ----------
