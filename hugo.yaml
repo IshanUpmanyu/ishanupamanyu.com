@@ -21,6 +21,10 @@ markup:
   goldmark:
     renderer:
       unsafe: true
+    parser:
+      attribute:
+        block: true
+      wrapStandAloneImageWithinParagraph: false
 
 Menus:
   main:
@@ -130,7 +134,7 @@ params:
     title: "Ishan Upamanyu."
     subtitle: "I build things with code."
     content: "A passionate backend developer. Here I share what I learn through building software for the real world."
-    image: /images/profile_pic.jpeg
+    image: /images/ishan-profile.webp
     bottomImage:
       enable: true
     # roundImage: true # Make hero image circular | default false
@@ -154,7 +158,7 @@ params:
   about:
     enable: true
     title: "About Me"
-    image: "/images/profile_pic.jpeg"
+    image: "/images/ishan-profile.webp"
     content: |-
       I am Ishan Upmanyu, a Senior Software Engineer with 9 years of experience in Java, Spring, and Scala. I have a strong passion for backend engineering and enjoy exploring various topics in this field. 
 

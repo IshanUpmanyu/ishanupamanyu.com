@@ -33,7 +33,7 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="http://localhost:1313/blog/search-engine-for-wikipedia-articles/" /><meta property="article:section" content="blog" />
 <meta property="article:published_time" content="2022-03-16T21:02:48+05:30" />
-<meta property="article:modified_time" content="2022-03-16T21:02:48+05:30" /><meta property="og:site_name" content="Ishan&#39;s Blog" />
+<meta property="article:modified_time" content="2022-03-16T21:02:48+05:30" /><meta property="og:site_name" content="Ishan Upamanyu&#39;s Blog" />
 
 <meta name="twitter:card" content="summary"/><meta name="twitter:title" content="How I created a search engine for Wikipedia articles"/>
 <meta name="twitter:description" content="It is said that the best way to learn a new software technology is to get your hands dirty. Recently I followed this advice when I was learning to be a search engineer. I found myself getting more and more interested in learning how search engines like google and product search engines like Amazon search work. I started learning about information retrieval theory and gradually moved on to practical technologies like Apache Lucene and Apache Solr."/>
@@ -282,8 +282,13 @@ How I created a search engine for Wikipedia articles | Ishan&#39;s Blog
           <p>It is said that the best way to learn a new software technology is to get your hands dirty. Recently I followed this advice when I was learning to be a search engineer. I found myself getting more and more interested in learning how search engines like google and product search engines like Amazon search work. I started learning about information retrieval theory and gradually moved on to practical technologies like Apache Lucene and Apache Solr. While reading books and watching videos was all well and great, I was not sure if I am actually learning real-life skills. So to fix that I thought why not create a search engine of my own and apply the techniques that I am learning. And thus the idea for <a href="http://wikisearchengine.com">wikisearchengine.com</a> was born.</p>
 <p>The first step in creating the engine was in deciding what do I want to search on? While brainstorming for options I remembered I had read a while ago that complete Wikipedia data is available for download. When I realized this, I thought what better data set to create a search engine than Wikipedia’s. Wikipedia has millions of articles, and creating a search experience on top of this data will be a great learning experience.</p>
 <p>If you want to check out the app before reading the article, it is deployed at <a href="http://wikisearchengine.com">wikisearchengine.com</a> and the source is available on Github <a href="https://github.com/IshanUpmanyu/wikisearchengine">here</a>.</p>
-<p><img src="/uploads/2022/03/Screenshot-2022-03-19-at-8.15.22-PM-1.png" alt="" title="Wiki Search Engine allows you to search on English Wikipedia articles"></p>
-<h2 id="technologies-used-at-a-glance">&ldquo;Technologies used at a glance</h2>
+<figure>
+    
+
+      <img src="/uploads/2022/03/Screenshot-2022-03-19-at-8.15.22-PM-1_hu211bba31393172b3fa7920b76808ac1a_99307_2254x1638_resize_q75_h2_box_3.webp">
+    
+    <figcaption align = "center">Figure: Wiki Search Engine allows you to search on English Wikipedia articles</figcaption>
+  </figure><h2 id="technologies-used-at-a-glance">&ldquo;Technologies used at a glance</h2>
 <p><strong>Backend:</strong> Java 11, SpringBoot, Apache Solr 8</p>
 <p><strong>Front End:</strong> HTML, Javascript, JQuery, Bootstrap 5</p>
 <p><strong>Infrastructure:</strong> <a href="https://www.digitalocean.com/">DigitalOcean</a> droplets and block storage.</p>

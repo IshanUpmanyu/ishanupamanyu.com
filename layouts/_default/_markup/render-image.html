@@ -1,0 +1,20 @@
+{{- $image := resources.Get .Destination -}}
+{{- if .IsBlock -}}
+  <figure>
+    {{ with $image.Resize (printf "%dx%d webp" $image.Width $image.Height) }}
+
+      <img src="{{ .RelPermalink }}"
+        {{- with $.Text }} alt="{{ . }}"{{ end -}}  
+      >
+    {{ end }}
+    <figcaption align = "center">Figure: {{ .Title }}</figcaption>
+  </figure>
+{{- else -}}
+  {{ with $image.Resize (printf "%dx%d webp" $image.Width $image.Height) }}
+
+     <img src="{{ .RelPermalink }}"
+        {{- with $.Text }} alt="{{ . }}"{{ end -}}  
+      >
+    
+  {{ end }}
+{{- end -}}

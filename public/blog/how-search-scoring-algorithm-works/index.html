@@ -33,7 +33,7 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="http://localhost:1313/blog/how-search-scoring-algorithm-works/" /><meta property="article:section" content="blog" />
 <meta property="article:published_time" content="2021-11-23T13:02:00+05:30" />
-<meta property="article:modified_time" content="2021-11-23T13:02:00+05:30" /><meta property="og:site_name" content="Ishan&#39;s Blog" />
+<meta property="article:modified_time" content="2021-11-23T13:02:00+05:30" /><meta property="og:site_name" content="Ishan Upamanyu&#39;s Blog" />
 
 <meta name="twitter:card" content="summary"/><meta name="twitter:title" content="How the search scoring algorithm works - A plain English guide to Vector Space Model"/>
 <meta name="twitter:description" content="Understand how the score is calculated using Vector Space Model to rank search results. In-depth explanation in simple easy to understand language."/>
@@ -318,10 +318,20 @@ How the search scoring algorithm works - A plain English guide to Vector Space M
 <p>There can be different mathematical functions used to calculate the similarity score. The one that is most commonly used is known as Cosine Similarity.</p>
 <h2 id="cosine-similarity--how-similar-are-the-documents-to-queries">Cosine Similarity – How similar are the documents to queries?</h2>
 <p>Cosine similarity calculates how similar two vectors are. It is measured by the cosine of the angle between two vectors and represents whether two vectors are pointing in roughly the same direction.</p>
-<p><img src="/uploads/2022/01/cosine-similarity.png" alt="" title="Cosine similarity represents whether two vectors point in roughly the same direction"></p>
-<p>Cosine similarity is calculated using the following formula:</p>
-<p><img src="/uploads/2022/01/cosine-similarity-formula-1.png" alt="The search scoring algorithm uses the following formula to calculate cosine similarity." title="The search scoring algorithm uses the following formula to calculate cosine similarity."></p>
-<p>The result of this operation is our score. Once we have scored each document, we sort our list of matching documents according to the score. The documents that have more terms in common with our query will rank higher. Similarly, the documents that have fewer terms will rank lower.</p>
+<figure>
+    
+
+      <img src="/uploads/2022/01/cosine-similarity_hu0446f28d25a661b7a083b2a00b970953_25034_1948x612_resize_q75_h2_box_3.webp">
+    
+    <figcaption align = "center">Figure: Cosine similarity represents whether two vectors point in roughly the same direction</figcaption>
+  </figure><p>Cosine similarity is calculated using the following formula:</p>
+<figure>
+    
+
+      <img src="/uploads/2022/01/cosine-similarity-formula-1_hu1e7116e3c2735b6944b898cff0ed1c67_38851_1352x482_resize_q75_h2_box_3.webp" alt="The search scoring algorithm uses the following formula to calculate cosine similarity.">
+    
+    <figcaption align = "center">Figure: The search scoring algorithm uses the following formula to calculate cosine similarity.</figcaption>
+  </figure><p>The result of this operation is our score. Once we have scored each document, we sort our list of matching documents according to the score. The documents that have more terms in common with our query will rank higher. Similarly, the documents that have fewer terms will rank lower.</p>
 <h2 id="conclusion">Conclusion</h2>
 <p>In this article, we understood the inner workings of the search scoring algorithm. We learned what vectors are. We then understood how to represent queries and documents as vectors. After that, we used the cosine similarity formula to find the score of the documents to query. At last, we understood that we can use this score to rank documents. This in a nutshell explains how the Vector Space model is used in Information Retrieval to calculate scoring. This is the model that is used in Lucene and hence in Solr and Elasticsearch.</p>
 <h2 id="what-next">Hope you learned something from this article.
